@@ -1,1 +1,1 @@
-|-- downloadImage 跨越下载图片 注：还是没解决跨域问题，需要使用Nginx代理转发
+|-- downloadImage 跨越下载图片

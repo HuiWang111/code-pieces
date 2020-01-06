@@ -1,3 +1,7 @@
+/**
+ * @description <a>的download属性仅支持同源url，因此对不同源的图片和txt文件需要为的处理才能点击直接下载
+ */
+
 // 方法一
 function downloadImageByCreateIframe(url) {
   if (!document.querySelector('#IframeReportImg')) {
@@ -58,4 +62,31 @@ function downloadImageByCreateCanvas(imgsrc, name) {
 }
 
 // 方法三、使用ly-downloader
+
+// 方法四
+function downloadImageByFetch(url, name) {
+  download(url, name);
+  
+  function toDataURL(url) {
+    return fetch(url)
+        .then((response) => {
+          return response.blob();
+        }).then(blob => {
+          return URL.createObjectURL(blob);
+        });
+  }
+
+  async function download(url, name) {
+    const a = document.createElement('a');
+    a.href = await toDataURL(url);
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+}
+
+// txt文件的处理相对简单，只需要增加以下两步就行了，url为文件下载路径
+const blob = new Blob([url]);
+a.href = URL.createObjectURL(blob);
 
