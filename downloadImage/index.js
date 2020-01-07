@@ -2,6 +2,57 @@
  * @description <a>的download属性仅支持同源url，因此对不同源的图片和txt文件需要为的处理才能点击直接下载
  */
 
+
+
+/**
+ * 综合方法，支持任意格式，支持跨越下载重命名，缺点是同源的文件也需要多一些操作
+ */
+function downloadFile(url, fileName) {
+  download(url, fileName);
+
+  function getBlob(url) {
+    return new Promise(resolve => {
+        const xhr = new XMLHttpRequest();
+
+        xhr.open('GET', url, true);
+        xhr.responseType = 'blob';
+        xhr.onload = () => {
+            if (xhr.status === 200) {
+                resolve(xhr.response);
+            }
+        };
+
+        xhr.send();
+    });
+  }
+  function saveAs(blob, filename) {
+    if (window.navigator.msSaveOrOpenBlob) {
+        navigator.msSaveBlob(blob, filename);
+    } else {
+        const link = document.createElement('a');
+        const body = document.querySelector('body');
+
+        link.href = window.URL.createObjectURL(blob);
+        link.download = filename;
+
+        link.style.display = 'none';
+        body.appendChild(link);
+        
+        link.click();
+        body.removeChild(link);
+
+        window.URL.revokeObjectURL(link.href);
+    }
+  }
+  function download(url, filename) {
+    getBlob(url).then(blob => {
+        saveAs(blob, filename);
+    });
+  }
+}
+
+// 以下方法存在缺点，弃用
+
 // 方法一
 function downloadImageByCreateIframe(url) {
   if (!document.querySelector('#IframeReportImg')) {
@@ -61,8 +112,6 @@ function downloadImageByCreateCanvas(imgsrc, name) {
   image.src = imgsrc;
 }
 
-// 方法三、使用ly-downloader
-
 // 方法四
 function downloadImageByFetch(url, name) {
   download(url, name);
@@ -83,6 +132,19 @@ function downloadImageByFetch(url, name) {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+  }
+}
+
+function createIsMedia() {
+  const video = ['mp4', 'mov', 'avi', 'rmvb', 'rm', 'flv', 'mp4', '3gp', 'asf', 'wmv', 'navi', 'mkv', 'f4v', 'qt'];
+  const image = ['png', 'jpg', 'jpeg', 'gif', 'bmp', 'psd', 'tiff', 'tga', 'eps'];
+  const audio = ['mp3', 'wav', 'mpeg-4', 'mpeg', 'wma', 'amr', 'aac', 'mpg', 'm4a'];
+
+  return function (ext) {
+    if ([...video, ...image, ...audio].includes(ext)) {
+      return true;
+    }
+    return false;
   }
 }
 
