@@ -1,53 +1,77 @@
 /**
- * @description <a>的download属性仅支持同源url，因此对不同源的图片和txt文件需要为的处理才能点击直接下载
+ * @description <a>的download属性仅支持同源url，因此对不同源的文件需要额外的处理才能点击直接下载
  */
-
-
-
-/**
- * 综合方法，支持任意格式，支持跨越下载重命名，缺点是同源的文件也需要多一些操作
- */
-function downloadFile(url, fileName) {
-  download(url, fileName);
-
-  function getBlob(url) {
-    return new Promise(resolve => {
-        const xhr = new XMLHttpRequest();
-
-        xhr.open('GET', url, true);
-        xhr.responseType = 'blob';
-        xhr.onload = () => {
-            if (xhr.status === 200) {
-                resolve(xhr.response);
-            }
-        };
-
-        xhr.send();
-    });
-  }
-  function saveAs(blob, filename) {
-    if (window.navigator.msSaveOrOpenBlob) {
-        navigator.msSaveBlob(blob, filename);
+function downloadFile(data, cb) {
+  const url = parseUrl(data);
+  const fileName = parseFileName(data, url);
+  if (url) {
+    if (isCrossOrigin(url)) {
+      saveFile(url, fileName);
     } else {
-        const link = document.createElement('a');
-        const body = document.querySelector('body');
-
-        link.href = window.URL.createObjectURL(blob);
-        link.download = filename;
-
-        link.style.display = 'none';
-        body.appendChild(link);
-        
-        link.click();
-        body.removeChild(link);
-
-        window.URL.revokeObjectURL(link.href);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      link.click();
     }
+  } else {
+    cb('当前无可导出数据');
   }
-  function download(url, filename) {
-    getBlob(url).then(blob => {
-        saveAs(blob, filename);
-    });
+
+  function parseUrl(data) {
+    let url = '';
+    if (data) {
+      if(_.isArray(data) && data.length > 0 && data[0].url) {
+        url = data[0].url;
+      }else if(data.url) {
+        url = data.url;
+      } else {
+        url = data;
+      }
+    }
+
+    return url.startsWith('http') ? url : `http://${url}`;
+  }
+
+  function parseFileName(data, url) {
+    let fileName = '未知文件.zip';
+    if (data) {
+      if (_.isArray(data) && data[0] && data[0].fileName) {
+        fileName = data[0].fileName;
+      } else if (data.fileName) {
+        fileName = data.fileName;
+      } else {
+        if (url) {
+          const arr = url.split('/');
+          const len = arr.length;
+          if (len > 0) {
+            fileName = decodeURI(arr[len - 1]);
+          }
+        }
+      }
+    }
+
+    return fileName;
+  }
+
+  function isCrossOrigin(url, defaultProtocol = 'http:') {
+    const getProtocol = url => {
+      const arr = url.split('//');
+      return arr.length > 1 ? arr[0] : defaultProtocol;
+    }
+    const getHost = url => {
+      const arr = url.split('//');
+      const Url = arr.length > 1 ? arr[1] : arr[0];
+      const host = Url.split('/')[0].split(':');
+      return {
+        hostname: host[0],
+        port: host.length > 1 ? host[1] : ''
+      }
+    }
+
+    const protocol = getProtocol(url);
+    const { hostname, port } = getHost(url);
+
+    return (protocol !== window.location.protocol) || (hostname !== window.location.hostname) || (port !== window.location.port);
   }
 }
 
@@ -147,8 +171,4 @@ function createIsMedia() {
     return false;
   }
 }
-
-// txt文件的处理相对简单，只需要增加以下两步就行了，url为文件下载路径
-const blob = new Blob([url]);
-a.href = URL.createObjectURL(blob);
 
