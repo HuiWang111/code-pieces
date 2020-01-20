@@ -1,2 +1,2 @@
-|-- downloadImage 跨越下载图片
-|-- call_apply call/apply模拟实现
+- downloadImage 跨越下载图片
+- call_apply_bind call/apply/bind模拟实现
