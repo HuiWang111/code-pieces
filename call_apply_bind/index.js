@@ -31,7 +31,7 @@ Function.prototype.Apply = function(context, arr) {
 };
 
 /**
- * bind比较复杂，需要注意3个要点：
+ * @description bind比较复杂，需要注意3个要点：
  * 1.返回一个函数
  * 2.可以传入参数
  * 3.当 bind 返回的函数作为构造函数的时候，bind 时指定的 this 值会失效，但传入的参数依然生效
