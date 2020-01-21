@@ -5,3 +5,5 @@
   call/apply/bind模拟实现
 ### new
   new操作符的模拟实现
+### debounce
+  时间防抖
