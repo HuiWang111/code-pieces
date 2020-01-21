@@ -6,4 +6,6 @@
 ### new
   new操作符的模拟实现
 ### debounce
-  时间防抖
+  事件防抖
+### throttle
+  事件节流

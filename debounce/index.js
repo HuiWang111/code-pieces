@@ -5,6 +5,9 @@
  * 3.第一次是否立即执行不延迟
  * 4.假设函数有返回值，虽然绝大部分情况用不到，但出于严谨还是考虑在内
  * 5.中途取消debounce
+ * 
+ * github地址：
+ * https://github.com/mqyqingfeng/Blog/tree/master/demos/debounce
  */
 function debounce(func, wait, immediate) {
   if (typeof func !== 'function') {
