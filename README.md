@@ -9,3 +9,5 @@
   事件防抖
 ### throttle
   事件节流
+### flatten
+  数组扁平化
