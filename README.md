@@ -13,3 +13,5 @@
   数组扁平化
 ### equal
   对象相等
+### arrayLike
+  类数组对象及arguments
