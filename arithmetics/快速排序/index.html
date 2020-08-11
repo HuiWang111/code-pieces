@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+
+<script>
+/*function QKSORT(items) {
+	let len = items.length,
+			i = 0,
+			j = len - 1,
+			key = items[0];
+
+	while(i < j) {
+		for (; i < j; --j) {
+			if (items[j] < key) {
+				items[i++] = items[j];
+				break;
+			}
+		}
+		console.log(items);
+		for (; i < j; ++i) {
+			if (items[i] > key) {
+				items[j--] = items[i];
+				break;
+			}
+		}
+		console.log(items);
+	}
+
+	// console.log(items);	
+}	*/
+
+function quickSort(array){
+	function sort(prev, numsize){
+		var i = prev;
+		var j = numsize -1;
+		var flag = array[prev];
+		if ((numsize - prev) > 1) {//长度大于1
+			while(i < j){
+				for(; i < j; j--){
+					if (array[j] < flag) {
+						array[i++] = array[j];　//a[i] = a[j]; i += 1;
+						break;
+					}
+				}
+				for( ; i < j; i++){
+					if (array[i] > flag){
+						array[j--] = array[i];
+						break;
+					}
+				}
+			}
+			array[i] = flag;
+			sort(0, i);
+			sort(i + 1, numsize);
+		}
+	}
+
+	sort(0, array.length);
+	return array;
+}
+
+let arr = [6, 1, 2, 7, 9, 3, 4, 5, 10, 8];
+
+quickSort(arr);
+</script>
+
+
+</body>
+</html>

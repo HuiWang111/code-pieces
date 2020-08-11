@@ -15,3 +15,11 @@
   对象相等
 ### arrayLike
   类数组对象及arguments
+### arithmetics
+  各种算法
+### cross-domain
+  跨越的解决方案
+### regExp
+  正则表达式
+### customizedEvent
+  js自定义事件
