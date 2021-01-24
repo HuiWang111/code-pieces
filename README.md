@@ -23,3 +23,5 @@
   正则表达式
 ### customizedEvent
   js自定义事件
+### reactive
+  响应式（数据驱动视图）原理
